@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Queryclintprovider from "./components/Queryclintprovider";
 import Scorecontextprovider from "./components/contexts/Scorecontext";
-
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,24 +29,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
+      suppressHydrationWarning={true}
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[url('/bgimg.png')] bg-center min-h-screen bg-cover  
    `}
-   cz-shortcut-listen="true"
-
+        cz-shortcut-listen="true"
       >
         <Queryclintprovider>
+          <Suspense fallback={<Loading/>}>
           <Scorecontextprovider>
-            <div className="w-full min-h-screen ">
-            {children}
-
-        </div>
-
+            <div className="w-full min-h-screen ">{children}</div>
           </Scorecontextprovider>
-           
-
+          
+          </Suspense>
+          
         </Queryclintprovider>
-       
-         
       </body>
     </html>
   );

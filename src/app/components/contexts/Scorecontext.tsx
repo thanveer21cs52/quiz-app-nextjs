@@ -18,13 +18,19 @@ export const Scorecontext=createContext<Scorecontexttype>({
 })
 
 function Scorecontextprovider({children}:{children:React.ReactNode}) {
-    const [score,setScore]=useState(0)
-    useEffect(()=>{
-        // if(Cookies.get("score")){
-        //     const scores=Cookies.get("score")||'0'
-        //     setScore(parseInt(scores))
-        // }
-    },[score])
+const [score, setScore] = useState<number>(() => {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("scoredata");
+    const parsed = Number(stored);
+    return !isNaN(parsed) ? parsed : 0;
+  }
+  return 0; // fallback for SSR
+});
+
+useEffect(() => {
+  localStorage.setItem("scoredata", JSON.stringify(score));
+}, [score]);
+
 
   return (
     <Scorecontext.Provider value={{score,setScore}}>

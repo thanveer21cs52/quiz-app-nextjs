@@ -2,12 +2,17 @@
 
 import Cookies from "js-cookie";
 import { redirect, useRouter } from "next/navigation";
+import { useContext } from "react";
+import { Scorecontext } from "./contexts/Scorecontext";
 
 
 
 
 
 function Logout() {
+  localStorage.clear()
+  const {score,setScore}=useContext(Scorecontext)
+
    const router=useRouter()
    function logoutfn(){
     if(Cookies.get("accesstoken")){

@@ -77,7 +77,7 @@ async function page({searchParams}:{searchParams:any}) {
     
     return (
        
-            <div className="flex flex-col  w-2/5 text-quizbutton justify-center items-center space-y-4 font-mono px-4 py-6  rounded-sm">
+
 
    
 
@@ -85,7 +85,7 @@ async function page({searchParams}:{searchParams:any}) {
 
    
       
-    </div>
+
             
 
     

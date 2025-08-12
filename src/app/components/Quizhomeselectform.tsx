@@ -1,14 +1,20 @@
 "use client"
-import React, { FormEvent } from 'react'
+import React, { FormEvent, useState } from 'react'
 
 import { useRouter } from 'next/navigation';
+import Loading from '../loading';
 
 
 
 function Quizhomeselectform({category}:{category:any}) {
+ if(localStorage.getItem("page")){
+  localStorage.removeItem("page")
+ }
+  const [loading,setloading]=useState(false)
     const router=useRouter()
     async function redirecttoquizfn(e:any){
     e.preventDefault()
+    setloading(true)
     const formdata=new FormData(e.target)
     const category=formdata.get("category")
     const level =formdata.get("level")
@@ -16,6 +22,9 @@ function Quizhomeselectform({category}:{category:any}) {
     router.push(`/quizes/quiz?category=${category}&level=${level}`)
 
 
+}
+if(loading){
+  return <Loading/>
 }
   return (
     <form className="flex flex-col bg-quizbg w-2/5 text-quizbutton justify-center items-center space-y-4 font-mono p-2 py-24 rounded-sm"
