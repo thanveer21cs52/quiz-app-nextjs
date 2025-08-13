@@ -15,7 +15,10 @@
   --color-quizbg:#FFD992;
   --color-quiztext:#080708;
   --color-quizbutton:#684B39;
-  --color-darktext:#1D1D1B
+  --color-darktext:#1D1D1B;
+  --color-quizlight:#FDFAB2;
+  --color-quizhover:#FDFAa1;
+  --color-quiztimer:#DF782B;
 }
 
 @media (prefers-color-scheme: dark) {

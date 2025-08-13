@@ -1,5 +1,5 @@
 "use client"
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 
 import { useRouter } from 'next/navigation';
 import Loading from '../loading';
@@ -7,9 +7,12 @@ import Loading from '../loading';
 
 
 function Quizhomeselectform({category}:{category:any}) {
- if(localStorage.getItem("page")){
-  localStorage.removeItem("page")
- }
+ useEffect(() => {
+    const page = localStorage.getItem("page");
+    if (page) {
+      localStorage.removeItem("page");
+    }
+  }, []);
   const [loading,setloading]=useState(false)
     const router=useRouter()
     async function redirecttoquizfn(e:any){

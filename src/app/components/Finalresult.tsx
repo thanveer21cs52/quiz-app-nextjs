@@ -2,20 +2,37 @@
 import { decode } from "html-entities";
 import React, { useContext } from "react";
 import { Scorecontext } from "./contexts/Scorecontext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import Loading from "../loading";
 
 
 
 function Finalresult({ resultdata }: { resultdata: any }) {
+  const params=useSearchParams()
     const router=useRouter()
+    const seconds=Number(params.get("totalseconds"))||0
   console.log(resultdata);
    const {score,setScore}=useContext(Scorecontext)
-   if(score==0&&resultdata.length==0){
-     router.push("/")
 
-   }
+   
+ 
+let totalseconds=""
+if (seconds < 60) {
+    totalseconds=`${seconds} seconds`;
+} else {
+    let minutes = seconds / 60;
+    totalseconds=`${minutes} minutes`;
+}
+if(resultdata.length==0){
+  return <Loading/>
+}
+
   return (
     <div className="grid grid-cols-4 w-full gap-4 m-4">
+      <div className="col-span-4 flex justify-center ">
+        <p className="bg-amber-100 text-amber-950 w-fit p-2 rounded-xs"> Total seconds: {totalseconds}</p>
+       
+      </div>
 
       {resultdata.length > 0 &&
         resultdata.map((data: any, index: number) => {

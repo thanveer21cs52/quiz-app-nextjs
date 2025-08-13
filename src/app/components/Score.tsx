@@ -9,7 +9,7 @@ export default function Score() {
   
   return (
     <div className='bg-quizbutton text-quizbg px-3 py-2 rounded-sm'>score: {score}
-    <button onClick={()=>setScore(prev=>prev+1)}>+</button>
+   
     </div>
   )
 }

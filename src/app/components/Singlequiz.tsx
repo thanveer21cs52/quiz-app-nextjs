@@ -6,7 +6,7 @@ import { Scorecontext } from "./contexts/Scorecontext";
 
 import Finalresult from "./Finalresult";
 import { useRouter } from "next/navigation";
-import { Resultcontext } from "./contexts/Finalresult";
+import { Resultcontext } from "./contexts/Finalresultcontext";
 import { useCountdown } from "../utils/Timer";
 
 
@@ -14,12 +14,30 @@ import { useCountdown } from "../utils/Timer";
 
 function Singlequiz({quizdata}:{quizdata:any}) {
 const {seconds, active, reset, stop} =useCountdown()
+const [totalseconds,settotalseconds]=useState(0)
  const [isend,setend]=useState(false)
   const router=useRouter()
- const [resultdata,setresultdata]=useState<any[]>(JSON.parse(localStorage.getItem("resultdata")||"[]"))
+ const [resultdata,setresultdata]=useState<any[]>(()=>{
+  if(typeof window !== "undefined"){
+      if(localStorage.getItem("resultdata")){
+    const parse=JSON.parse(localStorage.getItem("resultdata")||"[]")
+    return !isNaN(parse)?parse:[]
+  }
+  }
+
+  return []})
   const [issubmit,setsubmit]=useState<boolean>(false)
-  const localpage=JSON.parse(localStorage.getItem("page")||"1")
-  const [page,setpage]=useState<number>(parseInt(localpage))
+
+  const [page,setpage]=useState<number>(()=>{
+  if(typeof window !== "undefined"){
+      if(localStorage.getItem("page")){
+    const parse=JSON.parse(localStorage.getItem("page")||"1")
+    return !isNaN(parse)?parseInt(parse):1
+  }
+  }
+
+  return 1})
+
   const [youranswer,setyouranswer]=useState({
     id:"none",
     option:"none"
@@ -61,26 +79,36 @@ const {seconds, active, reset, stop} =useCountdown()
 
    }
    function handlesubmit(){
-      if(page==10){
-                 
-                if(correctanswer.id==youranswer.id){
-                  setScore(score+1)
-                }
-                const updatedata={...quizdata[page-1],youranswer}
-                setresultdata(prev=>[...prev,updatedata])
-                  setend(true)
-                return null
-                }
-                setsubmit(true)
-                if(correctanswer.id==youranswer.id){
-                  setScore(score+1)
-                }
-                const updatedata={...quizdata[page-1],youranswer}
-                setresultdata(prev=>[...prev,updatedata])
-                localStorage.setItem("resultdata",JSON.stringify(resultdata))
-                
-                
-   }
+   
+  stop(); 
+
+  settotalseconds(prev => prev + (10 - seconds)); 
+
+  const updatedAnswer = { ...quizdata[page - 1], youranswer };
+
+
+  const isCorrect = correctanswer.id === youranswer.id;
+
+  if (isCorrect) {
+        localStorage.setItem("scoredata", JSON.stringify(score+1))
+    setScore(prev => prev + 1);
+  }
+
+ 
+  setresultdata(prev => {
+    const newResult = [...prev, updatedAnswer];
+    localStorage.setItem("resultdata", JSON.stringify(newResult));
+    return newResult;
+  });
+
+  if (page === 10) {
+    setend(true); 
+    return;
+  }
+
+  setsubmit(true); 
+}
+
      function handleNext() {
      
       setpage(page+1)
@@ -90,7 +118,8 @@ const {seconds, active, reset, stop} =useCountdown()
   useEffect(()=>{
     if(isend){
       setResult(resultdata)
-      router.push("/quizes/results")
+ 
+      router.push(`/quizes/results?totalseconds=${totalseconds}`)
       
        
     
@@ -98,12 +127,17 @@ const {seconds, active, reset, stop} =useCountdown()
 
   },[isend])
   useEffect(()=>{
+    
     reset()
-  
     localStorage.setItem("page",JSON.stringify(page))
+    console.log(totalseconds,"sdss")
   },[page])
 
-
+useEffect(() => {
+  if (seconds === 0 && !issubmit) {
+    handlesubmit();
+  }
+}, [seconds]);
  
    
 
@@ -113,8 +147,10 @@ const {seconds, active, reset, stop} =useCountdown()
     return (
    
     <div className=" bg-quizbg text-quizbutton p-6 flex flex-col space-y-4 justify-center items-start h-fit w-2/4" >
-            <div className="flex w-full justify-end">
-              <div className="text-red-400">Timer: 00:{seconds!=10&&0}{seconds}</div></div>
+            <div className="flex w-full justify-between">
+             
+              <div className="text-quiztimer flex justify-start ">{seconds==0&&"Times Up Go Next"}</div>
+              <div className="text-quiztimer flex justify-end">Timer: 00:{seconds!=10&&0}{seconds}</div></div>
             <div className="flex flex-col justify-center items-start space-y-3  ">
                {page} {decode(quizdata[page-1].question)}
              </div>
@@ -128,7 +164,7 @@ const {seconds, active, reset, stop} =useCountdown()
                 }
               }
               const optionid=`${page-1}-${index}`
-                 return <label htmlFor={optionid} key={optionid} className={`flex ${optionid==correctanswer.id&&issubmit&&youranswer.id!="none"&&"bg-green-400"} ${correctanswer.id==youranswer.id&&issubmit&&optionid==youranswer.id&&"bg-green-400"} ${optionid==youranswer.id&&issubmit&&optionid!=correctanswer.id&&"bg-red-400"} p-2 bg-amber-200 space-x-2 hover:bg-amber-50`} >
+                 return <label htmlFor={optionid} key={optionid} className={`flex ${optionid==correctanswer.id&&issubmit&&youranswer.id!="none"&&"bg-green-400"} ${correctanswer.id==youranswer.id&&issubmit&&optionid==youranswer.id&&"bg-green-400"} ${optionid==youranswer.id&&issubmit&&optionid!=correctanswer.id&&"bg-red-400"} p-2 border-quizbutton border-2 space-x-2 shadow-black ${!issubmit&&"hover:bg-quizhover"} ${issubmit&&"text-black/30"} `}>
                    <input type="radio" id={optionid} name={`${page-1}`} value={decode(option)} disabled={seconds==0||issubmit} onClick={(e:any)=>{
                     setyouranswer({
                       id:`${e.target.id}`,

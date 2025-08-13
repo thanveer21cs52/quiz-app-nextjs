@@ -1,18 +1,33 @@
 "use client"
-import React from 'react'
+import React, { useContext } from 'react'
+import Cookies from 'js-cookie'
 import Score from './Score'
 import Logout from './Logout'
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation'
+import { Scorecontext } from './contexts/Scorecontext'
+import { Resultcontext } from './contexts/Finalresultcontext'
 function Nav() {
+      const {score,setScore}=useContext(Scorecontext)
+                      const {Result,setResult}=useContext(Resultcontext)
     const path=usePathname()
     const router=useRouter()
   return (
      <div className=" min-h-[8vh] w-full flex justify-between items-center">
                 <button onClick={()=>{
+                    localStorage.clear()
+                    
+                      setResult([])
+                      setScore(0)
                   
                     if(path=="/quizes"){
-                        router.push("/")
+                        if(Cookies.get("accesstoken")){
+                            console.log("you are are login")
+                        }else{
+                                router.push("/")
+
+                        }
+                    
 
                     }else{
 

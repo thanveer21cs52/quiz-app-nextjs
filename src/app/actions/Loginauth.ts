@@ -16,7 +16,7 @@ export async function loginauth(formdata: FormData) {
       body: JSON.stringify({
         username,
         password,
-        expiresInMins: 30,
+      
       })
     });
     if(!res.ok){
@@ -29,7 +29,7 @@ export async function loginauth(formdata: FormData) {
     cookiestore.set({
     name: "accesstoken",
     value: datas.accessToken,
-    maxAge: 60*3, 
+    maxAge: 60*10, 
  
   });
 

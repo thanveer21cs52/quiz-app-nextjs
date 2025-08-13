@@ -24,12 +24,10 @@ const [score, setScore] = useState<number>(() => {
     const parsed = Number(stored);
     return !isNaN(parsed) ? parsed : 0;
   }
-  return 0; // fallback for SSR
+  return 0; 
 });
 
-useEffect(() => {
-  localStorage.setItem("scoredata", JSON.stringify(score));
-}, [score]);
+
 
 
   return (

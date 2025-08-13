@@ -31,11 +31,7 @@ function Resultcontextprovider({children}:{children:React.ReactNode}) {
     return [];
   });
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("resultdata", JSON.stringify(Result));
-    }
-  }, [Result]);
+
 
   return (
     <Resultcontext.Provider value={{Result,setResult}}>

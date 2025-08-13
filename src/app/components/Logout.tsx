@@ -2,26 +2,42 @@
 
 import Cookies from "js-cookie";
 import { redirect, useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Scorecontext } from "./contexts/Scorecontext";
+import Finalresult from "./Finalresult";
+import { Resultcontext } from "./contexts/Finalresultcontext";
 
 
 
 
 
 function Logout() {
-  localStorage.clear()
+  
   const {score,setScore}=useContext(Scorecontext)
-
+  const {Result,setResult}=useContext(Resultcontext)
+ 
+   
    const router=useRouter()
    function logoutfn(){
-    if(Cookies.get("accesstoken")){
-      Cookies.remove("accesstoken")
-    }
-    router.replace("/")
+     
+    
+    
+  
+
+  setScore(0);
+  setResult([]);
+
+  
+  if (Cookies.get("accesstoken")) {
+    Cookies.remove("accesstoken");
+  }
+
+
+  localStorage.clear();
 
  
- 
+  redirect("/")
+
 
 }
     return (

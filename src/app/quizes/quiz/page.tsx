@@ -64,7 +64,7 @@ async function page({searchParams}:{searchParams:any}) {
     
 
     const data =await fetchquiz(level,category)
-    
+    console.log(data.message)
     const quizdata=await dataconvertquiz(data.quizdata)
     console.log(quizdata)
 
